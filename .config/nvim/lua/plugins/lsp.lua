@@ -1,0 +1,116 @@
+-- LSP and completion plugins
+
+return {
+    -- Mason for LSP server management
+    {
+        "mason-org/mason.nvim",
+        config = function()
+            require("mason").setup()
+        end,
+    },
+
+    -- LSP Configuration
+    {
+        'neovim/nvim-lspconfig',
+        dependencies = {
+            'mason-org/mason.nvim',
+            'mason-org/mason-lspconfig.nvim',
+            'hrsh7th/nvim-cmp',
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-path',
+            'L3MON4D3/LuaSnip',
+            'saadparwaiz1/cmp_luasnip',
+        },
+        config = function()
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
+            capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+
+            local lspconfig = require('lspconfig')
+            local cmp = require('cmp')
+            local luasnip = require('luasnip')
+
+            -- Configure autocompletion
+            cmp.setup({
+                performance = {
+                    debounce = 0, -- No debounce
+                    throttle = 0, -- No throttling
+                },
+                completion = {
+                    completeopt = "menu,menuone", -- Enable menu and auto-highlight the first item
+                },
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
+                mapping = {
+                    ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+                    ['<C-Space>'] = cmp.mapping.complete(),
+                },
+                sources = {
+                    { name = 'buffer',   max_item_count = 3 },
+                    { name = 'path',     max_item_count = 3 },
+                    { name = 'nvim_lsp', max_item_count = 3 },
+                    { name = 'luasnip',  max_item_count = 3 },
+                },
+            })
+
+            -- Python LSP setup
+            lspconfig.pylsp.setup({
+                settings = {
+                    pylsp = {
+                        plugins = {
+                            pyflakes = { enabled = false }, -- for syntax errors
+                            pycodestyle = { enabled = false },
+                            mccabe = { enabled = false },
+                            pylint = { enabled = false },
+                            pylsp_mypy = {
+                                enabled = true,
+                            },
+                            pylsp_black = { enabled = true },
+                            pylsp_isort = { enabled = false },
+                            yapf = { enabled = false },
+                        },
+                    },
+                },
+            })
+
+            -- hls
+            lspconfig.hls.setup({
+                cmd = { "haskell-language-server-wrapper", "--lsp" },
+                filetypes = { "haskell", "lhaskell", "cabal" },
+                root_dir = lspconfig.util.root_pattern("hie.yaml", "stack.yaml", "cabal.project", "*.cabal", ".git"),
+                settings = {
+                    haskell = {
+                        formattingProvider = "fourmolu", -- or "fourmolu"
+                        cabalFormattingProvider = "cabalfmt",
+                    },
+                },
+            })
+
+            lspconfig.clangd.setup({
+                cmd = {
+                    "clangd",
+                    "--header-insertion=never",
+                    -- "--completion-style=detailed",
+                },
+                capabilities = capabilities, -- your existing capabilities
+                on_attach = function(client, bufnr)
+                    print("clangd LSP attached")
+                end,
+            })
+
+            require("mason-lspconfig").setup({
+                function(server_name)
+                    require('lspconfig')[server_name].setup({
+                        capabilities = capabilities,
+                        on_attach = function(client, bufnr)
+                            print(server_name .. " LSP attached")
+                        end,
+                    })
+                end,
+            })
+        end,
+    },
+}
