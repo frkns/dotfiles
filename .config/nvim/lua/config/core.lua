@@ -1,5 +1,14 @@
 -- Core vim options and settings
 
+-- Suppress lspconfig deprecation warnings globally
+local original_notify = vim.notify
+vim.notify = function(msg, level, opts)
+    if type(msg) == "string" and (msg:match("lspconfig.*deprecated") or msg:match("Feature will be removed")) then
+        return  -- Suppress lspconfig deprecation messages
+    end
+    return original_notify(msg, level, opts)
+end
+
 vim.g.cpp_compile_prefix = "g++ -std=c++23 -DLOCAL -O2 -g -Wall -Wextra -Wshadow -Wformat=2 -Wlogical-op -Wduplicated-cond -Wshift-overflow -fstack-protector-all -fsanitize=undefined -fsanitize-recover=all -Wno-unused-result -Wno-sign-conversion -Wno-sign-compare "
 -- to precompile,
 -- GOTO /usr/include/x86_64-linux-gnu/c++/11/bits,

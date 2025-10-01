@@ -76,19 +76,4 @@ end
 -- Key mappings for functions
 vim.api.nvim_set_keymap('n', ',o', ':w<CR>:lua run_oj()<CR>', { noremap = true, silent = true })
 
--- Filter diagnostics function
-local function filter_diagnostics(diagnostics)
-    local filtered = {}
-    for _, d in ipairs(diagnostics) do
-        if not string.find(d.message, "not allowed with 'C'") then
-            table.insert(filtered, d)
-        end
-    end
-    return filtered
-end
-
--- Override LSP diagnostics handler
-vim.lsp.handlers["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
-    result.diagnostics = filter_diagnostics(result.diagnostics)
-    vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
-end
+-- LSP diagnostics handler removed to avoid conflicts with nvim-lspconfig migration

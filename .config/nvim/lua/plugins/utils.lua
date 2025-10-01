@@ -211,29 +211,62 @@ return {
     },
     {
         "L3MON4D3/LuaSnip",
-        -- dependencies = {
-        --     "rafamadriz/friendly-snippets", -- optional pre-made snippets
-        -- },
+        dependencies = {
+            -- "rafamadriz/friendly-snippets",
+            "hrsh7th/nvim-cmp",
+        },
         config = function()
             local ls = require("luasnip")
+            local cmp = require("cmp")
 
+            -- Basic LuaSnip setup
             ls.setup({
-                history = true, -- jump back into previous snippet
+                history = true,
                 region_check_events = "InsertEnter",
                 delete_check_events = "TextChanged",
             })
 
+            -- Load VSCode snippets (friendly-snippets)
+            -- require("luasnip.loaders.from_vscode").lazy_load()
+
             require("luasnip.loaders.from_vscode").lazy_load({
-                paths = { vim.fn.stdpath("config") .. "/snippets" }, -- custom snippets
+                paths = "~/.config/nvim/snippets",
             })
 
-            -- keymaps for insert and select mode
-            local keymap = vim.keymap.set
-            keymap({ "i", "s" }, "<C-k>", function() ls.expand_or_jump() end, { silent = true })
-            keymap({ "i", "s" }, "<C-j>", function() ls.jump(-1) end, { silent = true })
-            keymap("i", "<C-l>", function() if ls.choice_active() then ls.change_choice(1) end end, { silent = true })
+            -- local keymap = vim.keymap.set
+            --
+            -- -- Tab: completion menu next, snippet expand/jump, or fallback
+            -- keymap("i", "<Tab>", function()
+            --     if cmp.visible() then
+            --         return cmp.select_next_item()
+            --     elseif ls.expand_or_jumpable() then
+            --         return ls.expand_or_jump()
+            --     else
+            --         return "<Tab>"
+            --     end
+            -- end, { expr = true, silent = true })
+            --
+            -- -- Shift-Tab: completion menu prev, snippet jump backward, or fallback
+            -- keymap("i", "<S-Tab>", function()
+            --     if cmp.visible() then
+            --         return cmp.select_prev_item()
+            --     elseif ls.jumpable(-1) then
+            --         return ls.jump(-1)
+            --     else
+            --         return "<S-Tab>"
+            --     end
+            -- end, { expr = true, silent = true })
+            --
+            -- -- Choice node cycling
+            -- keymap("i", "<C-l>", function()
+            --     if ls.choice_active() then
+            --         ls.change_choice(1)
+            --     end
+            -- end, { silent = true })
         end,
     },
+
+
 
     -- Indentation detection
     { "tpope/vim-sleuth",          event = "BufReadPost" },

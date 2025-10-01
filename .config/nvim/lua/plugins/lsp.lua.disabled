@@ -9,10 +9,9 @@ return {
         end,
     },
 
-    -- LSP Configuration (pinned to commit before deprecation warnings)
+    -- LSP Configuration
     {
         'neovim/nvim-lspconfig',
-        commit = 'f781e8e20ea9bcd9e2ebffb3fc0ac94b8d4c4954',
         dependencies = {
             'mason-org/mason.nvim',
             'mason-org/mason-lspconfig.nvim',
@@ -24,11 +23,10 @@ return {
             'saadparwaiz1/cmp_luasnip',
         },
         config = function()
-            local lspconfig = require('lspconfig')
-
             local capabilities = vim.lsp.protocol.make_client_capabilities()
             capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
+            local lspconfig = require('lspconfig')
             local cmp = require('cmp')
             local luasnip = require('luasnip')
 
@@ -49,10 +47,6 @@ return {
                 mapping = {
                     ['<Tab>'] = cmp.mapping.confirm({ select = true }),
                     ['<C-Space>'] = cmp.mapping.complete(),
-
-                    -- New: Ctrl-j / Ctrl-k to navigate items
-                    ['<C-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-                    ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
                 },
                 sources = {
                     { name = 'buffer',   max_item_count = 3 },
@@ -64,10 +58,6 @@ return {
 
             -- Python LSP setup
             lspconfig.pylsp.setup({
-                capabilities = capabilities,
-                on_attach = function(client, bufnr)
-                    print("pylsp LSP attached")
-                end,
                 settings = {
                     pylsp = {
                         plugins = {
@@ -88,10 +78,6 @@ return {
 
             -- hls
             lspconfig.hls.setup({
-                capabilities = capabilities,
-                on_attach = function(client, bufnr)
-                    print("hls LSP attached")
-                end,
                 cmd = { "haskell-language-server-wrapper", "--lsp" },
                 filetypes = { "haskell", "lhaskell", "cabal" },
                 root_dir = lspconfig.util.root_pattern("hie.yaml", "stack.yaml", "cabal.project", "*.cabal", ".git"),
@@ -116,22 +102,16 @@ return {
             })
 
             require("mason-lspconfig").setup({
-                ensure_installed = { "pylsp", "clangd", "hls" },
-                handlers = {
-                    function(server_name)
-                        -- Skip servers already configured above
-                        if server_name == 'pylsp' or server_name == 'hls' or server_name == 'clangd' then
-                            return
-                        end
-                        require('lspconfig')[server_name].setup({
-                            capabilities = capabilities,
-                            on_attach = function(client, bufnr)
-                                print(server_name .. " LSP attached")
-                            end,
-                        })
-                    end,
-                },
+                function(server_name)
+                    require('lspconfig')[server_name].setup({
+                        capabilities = capabilities,
+                        on_attach = function(client, bufnr)
+                            print(server_name .. " LSP attached")
+                        end,
+                    })
+                end,
             })
         end,
     },
 }
+
