@@ -1,0 +1,16 @@
+# ignore everything by default
+*
+
+!.gitignore  # upload this file
+!.zshrc
+!.vimrc
+!.tmux.conf
+!.clang-format
+!.config/
+!.config/nvim/
+!.config/nvim/**
+!.config/mypy/
+!.config/mypy/**
+!.config/clangd/
+!.config/clangd/**
+
