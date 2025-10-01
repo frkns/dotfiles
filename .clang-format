@@ -3,7 +3,7 @@ TabWidth: 4
 UseTab: Never
 BreakBeforeBraces: Attach 
 AllowShortFunctionsOnASingleLine: Empty
-ColumnLimit: 100
+ColumnLimit: 88
 BreakBeforeConceptDeclarations: Always
 AllowShortLambdasOnASingleLine: None
 PointerAlignment: Left
