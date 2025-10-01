@@ -209,6 +209,31 @@ return {
             }
         end
     },
+    {
+        "L3MON4D3/LuaSnip",
+        -- dependencies = {
+        --     "rafamadriz/friendly-snippets", -- optional pre-made snippets
+        -- },
+        config = function()
+            local ls = require("luasnip")
+
+            ls.setup({
+                history = true, -- jump back into previous snippet
+                region_check_events = "InsertEnter",
+                delete_check_events = "TextChanged",
+            })
+
+            require("luasnip.loaders.from_vscode").lazy_load({
+                paths = { vim.fn.stdpath("config") .. "/snippets" }, -- custom snippets
+            })
+
+            -- keymaps for insert and select mode
+            local keymap = vim.keymap.set
+            keymap({ "i", "s" }, "<C-k>", function() ls.expand_or_jump() end, { silent = true })
+            keymap({ "i", "s" }, "<C-j>", function() ls.jump(-1) end, { silent = true })
+            keymap("i", "<C-l>", function() if ls.choice_active() then ls.change_choice(1) end end, { silent = true })
+        end,
+    },
 
     -- Indentation detection
     { "tpope/vim-sleuth",          event = "BufReadPost" },
@@ -235,5 +260,5 @@ return {
 
             vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
         end
-    }
+    },
 }
