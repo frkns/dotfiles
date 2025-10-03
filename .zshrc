@@ -87,6 +87,9 @@ export HISTSIZE=1000
 export SAVEHIST=1000
 export HISTFILE=~/.zsh_history
 
+# env vars that I set
+export LOCAL=true
+
 
 # Exported variables
 export NVM_DIR="$HOME/.nvm"
