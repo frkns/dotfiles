@@ -294,4 +294,7 @@ return {
             vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
         end
     },
+
+
+
 }
