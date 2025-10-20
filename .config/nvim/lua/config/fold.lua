@@ -1,10 +1,12 @@
 -- Custom folding configuration
 
--- Define a Lua function that returns custom fold text
 function _G.custom_fold_text()
+    local line = vim.fn.getline(vim.v.foldstart + 1)  -- get the next line after the fold header
     local count = vim.v.foldend - vim.v.foldstart + 1
-    return '🐬 +---' .. ' ' .. count .. ' lines ------+'
+    local preview = line:gsub("^%s+", ""):sub(1, 40)  -- trim leading spaces, limit length
+    return string.format("🐬 %s ... (%d lines)", preview, count)
 end
+
 
 -- Set foldtext to call your Lua function
 vim.opt.foldtext = 'v:lua.custom_fold_text()'

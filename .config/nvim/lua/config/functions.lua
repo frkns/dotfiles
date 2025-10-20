@@ -8,14 +8,11 @@ function run_local()
     local filetype = vim.bo.filetype  -- filetype
     local term_cmd = ""
     if filetype == "cpp" then
-        local compile_cmd = vim.g.cpp_compile_prefix .. file
-        local compile_output = vim.fn.system(compile_cmd)
-        if vim.v.shell_error ~= 0 then
-            vim.cmd("belowright 12split | terminal echo '" .. compile_output .. "'")
-            return
-        end
-        term_cmd = "./a.out < in && rm ./a.out"
-        print("C++ execution completed.")
+        term_cmd = string.format(
+            "bash -c '%s %s 2>&1 && ./a.out < in 2>&1'",
+            vim.g.cpp_compile_prefix, file
+        )
+        -- print("C++ execution completed.")
     elseif filetype == "python" then
         term_cmd = "python -u " .. file .. " < in"
         print("Python execution completed.")
@@ -25,7 +22,7 @@ function run_local()
     end
     -- If a previous terminal exists, delete it first
     if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
-        vim.api.nvim_buf_delete(term_buf, {force = true})
+        vim.api.nvim_buf_delete(term_buf, { force = true })
     end
     -- Open new terminal and store buffer id
     -- vim.cmd("belowright 12split | terminal " .. term_cmd)
@@ -36,14 +33,12 @@ end
 function run_make()
     local make_cmd = "make"
     if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
-        vim.api.nvim_buf_delete(term_buf, {force = true})
+        vim.api.nvim_buf_delete(term_buf, { force = true })
     end
     vim.cmd("belowright 12split | terminal " .. make_cmd)
     term_buf = vim.api.nvim_get_current_buf()
     vim.cmd("startinsert")
 end
-
-
 
 -- Bind funcs
 vim.api.nvim_set_keymap('n', ',t', ':w<CR>:lua run_local()<CR>', { noremap = true, silent = true })
