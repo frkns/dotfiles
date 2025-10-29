@@ -178,7 +178,7 @@ alias pip='python3.13 -m pip'
 # alias pip3.13='python3.13 -m pip'
 
 export PATH="$HOME/go/bin:$PATH"
-
+export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
 
 function lfcd() {
   local tmpfile=$(mktemp)
