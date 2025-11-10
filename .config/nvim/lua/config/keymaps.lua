@@ -18,9 +18,12 @@ end, { desc = "Wrap visual selection in comment fold" })
 
 
 
+-- tabs
+vim.keymap.set('n', '<Tab>', 'gt', { noremap = true, silent = true })
+vim.keymap.set('n', '<S-Tab>', 'gT', { noremap = true, silent = true })
 
-
-
+-- fold close
+vim.keymap.set('n', '<CR>', 'zMj', { noremap = true, silent = true })
 
 -- General key mappings
 vim.keymap.set('n', ',r', ':w<CR>:RunFile<CR>', { noremap = true, silent = false })

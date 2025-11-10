@@ -158,6 +158,8 @@ return {
         },
         lazy = false,
         opts = {
+            close_if_last_window = true,
+            enable_git_status = false,
             default_component_configs = {
                 symlink_target = {
                     enabled = true,

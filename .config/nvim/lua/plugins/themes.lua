@@ -88,7 +88,7 @@ return {
                     local groups = {
                         Visual = { bg = colors.white, standout = true },
                         IncSearch = { fg = colors.mix_green, bg = colors.green },
-                        Folded = { bg = colors.base3 },
+                        -- Folded = { bg = colors.base3 },
                         DiagnosticError = { fg = colors.orange, bg = colors.mix_orange },
                         DiagnosticVirtualTextError = { fg = colors.orange, bg = colors.mix_orange },
 
