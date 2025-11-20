@@ -1,5 +1,5 @@
 CompileFlags:
-  Add: [-std=c++23, -DLOCAL]
+  Add: [-std=c++23, -DLOCAL, -Wno-vla-cxx-extension]
 
 HeaderInsertion:
   IncludeInsertion: Never
