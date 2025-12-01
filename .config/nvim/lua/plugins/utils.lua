@@ -71,7 +71,7 @@ return {
                     },
                     java = {
                         "cd \"$dir\" &&",
-                        "java \"$fileName\"",
+                        "javac \"$fileName\"",
                     },
                     python = {
                         "cd $dir &&",
