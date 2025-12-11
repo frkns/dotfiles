@@ -4,6 +4,7 @@
 !.gitignore  # upload this file
 !.zshrc
 !.vimrc
+!.rgrc
 !.tmux.conf
 !.clang-format
 !.config/

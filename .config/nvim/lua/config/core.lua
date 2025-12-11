@@ -9,7 +9,8 @@ vim.notify = function(msg, level, opts)
     return original_notify(msg, level, opts)
 end
 
-vim.g.cpp_compile_prefix = "g++ -std=c++23 -DLOCAL -O2 -g -Wall -Wextra -Wshadow -Wformat=2 -Wlogical-op -Wduplicated-cond -Wshift-overflow -fstack-protector-all -fsanitize=address,undefined -fsanitize-recover=all -Wno-unused-result -Wno-sign-conversion -Wno-sign-compare "
+-- vim.g.cpp_compile_prefix = "g++ -std=c++23 -DLOCAL -O2 -g -Wall -Wextra -Wshadow -Wformat=2 -Wlogical-op -Wduplicated-cond -Wshift-overflow -fstack-protector-all -fsanitize=address,undefined -fsanitize-recover=all -Wno-unused-result -Wno-sign-conversion -Wno-sign-compare "
+vim.g.cpp_compile_prefix = os.getenv('CPP_PREFIX')
 -- to precompile,
 -- GOTO /usr/include/x86_64-linux-gnu/c++/11/bits,
 -- RUN  g++ -x c++-header ... stdc++.h

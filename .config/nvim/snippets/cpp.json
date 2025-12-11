@@ -10,7 +10,7 @@
             "    } // (any associative fn)",
             "    vector<T> s;",
             "    int n;",
-            "    Tree(int n = 0, T def = unit) : s(2 * n, def), n(n) {}",
+            "    Tree(int n_ = 0, T def = unit) : s(2 * n_, def), n(n_) {}",
             "    void update(int pos, T val) {",
             "        for (s[pos += n] = val; pos /= 2;)",
             "            s[pos] = f(s[pos * 2], s[pos * 2 + 1]);",

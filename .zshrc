@@ -192,3 +192,9 @@ function lfcd() {
   fi
 }
 alias lf='lfcd'
+
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+export FZF_DEFAULT_COMMAND="fdfind . $HOME"
+
+export CPP_PREFIX="g++ -std=c++23 -DLOCAL -O2 -g -Wall -Wextra -Wshadow -Wformat=2 -Wlogical-op -Wduplicated-cond -Wshift-overflow -fstack-protector-all -fsanitize=address,undefined -fsanitize-recover=all -Wno-unused-result -Wno-sign-conversion -Wno-sign-compare "
