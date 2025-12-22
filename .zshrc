@@ -173,9 +173,10 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 alias pip='python3.13 -m pip'
-# alias pip3.10='python3.10 -m pip'
-# alias pip3.11='python3.11 -m pip'
-# alias pip3.13='python3.13 -m pip'
+alias pip3.10='python3.10 -m pip'
+alias pip3.11='python3.11 -m pip'
+alias pip3.12='python3.12 -m pip'
+alias pip3.13='python3.13 -m pip'
 
 export PATH="$HOME/go/bin:$PATH"
 export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
@@ -195,6 +196,7 @@ alias lf='lfcd'
 
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 export PATH=$JAVA_HOME/bin:$PATH
-export FZF_DEFAULT_COMMAND="fdfind . $HOME"
+export FZF_DEFAULT_COMMAND='fdfind --hidden --type d --type f --no-ignore --glob "*" $HOME'
 
 export CPP_PREFIX="g++ -std=c++23 -DLOCAL -O2 -g -Wall -Wextra -Wshadow -Wformat=2 -Wlogical-op -Wduplicated-cond -Wshift-overflow -fstack-protector-all -fsanitize=address,undefined -fsanitize-recover=all -Wno-unused-result -Wno-sign-conversion -Wno-sign-compare "
+source '/home/sunrise/.nvm/versions/node/v22.16.0/lib/node_modules/@hyperupcall/autoenv/activate.sh'

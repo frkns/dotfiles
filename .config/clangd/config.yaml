@@ -3,3 +3,8 @@ CompileFlags:
 
 HeaderInsertion:
   IncludeInsertion: Never
+
+Diagnostics:
+  Suppress:
+    - not_found_by_two_phase_lookup
+
