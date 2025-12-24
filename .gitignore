@@ -14,3 +14,5 @@
 !.config/mypy/**
 !.config/clangd/
 !.config/clangd/**
+!.config/mpv/
+!.config/mpv/**

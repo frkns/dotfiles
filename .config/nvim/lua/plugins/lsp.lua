@@ -1,5 +1,25 @@
 -- LSP and completion plugins
 
+local function get_uv_venv_python()
+    -- Check for .venv in current directory (uv default)
+    local venv_python = vim.fn.getcwd() .. '/.venv/bin/python'
+    if vim.fn.filereadable(venv_python) == 1 then
+        return venv_python
+    end
+
+    -- Fallback
+    return 'python'
+end
+
+local function get_mypy_overrides()
+    local venv_path = vim.fn.getcwd() .. '/.venv'
+    if vim.fn.isdirectory(venv_path) == 1 then
+        return { "--python-executable", venv_path .. "/bin/python", true }
+    end
+    return {}
+end
+
+
 return {
     -- Mason for LSP server management
     {
@@ -65,8 +85,10 @@ return {
             -- Python LSP setup
             lspconfig.pylsp.setup({
                 capabilities = capabilities,
+                cmd = { get_uv_venv_python(), "-m", "pylsp" },
                 on_attach = function(client, bufnr)
-                    print("pylsp LSP attached")
+                    local python = get_uv_venv_python()
+                    print("pylsp LSP attached with: " .. python)
                 end,
                 settings = {
                     pylsp = {
@@ -77,6 +99,15 @@ return {
                             pylint = { enabled = false },
                             pylsp_mypy = {
                                 enabled = true,
+                                live_mode = true,
+                                dmypy = false,
+                                -- Point mypy to the venv's Python interpreter
+                                pylsp_mypy = {
+                                    enabled = true,
+                                    live_mode = true,
+                                    dmypy = false,
+                                    overrides = get_mypy_overrides(), -- Call the function, don't pass it
+                                },
                             },
                             pylsp_black = { enabled = true },
                             pylsp_isort = { enabled = false },
