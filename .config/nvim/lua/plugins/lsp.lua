@@ -88,7 +88,7 @@ return {
                 cmd = { get_uv_venv_python(), "-m", "pylsp" },
                 on_attach = function(client, bufnr)
                     local python = get_uv_venv_python()
-                    print("pylsp LSP attached with: " .. python)
+                    print("+ " .. python)
                 end,
                 settings = {
                     pylsp = {
