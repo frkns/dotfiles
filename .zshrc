@@ -199,4 +199,22 @@ export PATH=$JAVA_HOME/bin:$PATH
 export FZF_DEFAULT_COMMAND='fdfind --hidden --type d --type f --no-ignore --glob "*" $HOME'
 
 export CPP_PREFIX="g++ -std=c++23 -DLOCAL -O2 -g -Wall -Wextra -Wshadow -Wformat=2 -Wlogical-op -Wduplicated-cond -Wshift-overflow -fstack-protector-all -fsanitize=address,undefined -fsanitize-recover=all -Wno-unused-result -Wno-sign-conversion -Wno-sign-compare "
-source '/home/sunrise/.nvm/versions/node/v22.16.0/lib/node_modules/@hyperupcall/autoenv/activate.sh'
+
+function cd() {
+  builtin cd "$@"
+
+  if [[ -z "$VIRTUAL_ENV" ]] ; then
+    ## If env folder is found then activate the vitualenv
+      if [[ -d ./.venv ]] ; then
+        source ./.venv/bin/activate
+      fi
+  else
+    ## check the current folder belong to earlier VIRTUAL_ENV folder
+    # if yes then do nothing
+    # else deactivate
+      parentdir="$(dirname "$VIRTUAL_ENV")"
+      if [[ "$PWD"/ != "$parentdir"/* ]] ; then
+        deactivate
+      fi
+  fi
+}
