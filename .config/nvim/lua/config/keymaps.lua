@@ -1,5 +1,22 @@
 -- Key mappings
 
+-- table of your delimiter keys
+local delimiters = { "*", "/", "$", "%", "#" }
+
+for _, d in ipairs(delimiters) do
+  -- inside the delimiter
+  vim.keymap.set({ "o", "x" }, "i" .. d, function()
+    vim.cmd(string.format([[normal! T%svt%s]], d, d))
+  end, { silent = true })
+
+  -- around the delimiter (optional)
+  vim.keymap.set({ "o", "x" }, "a" .. d, function()
+    vim.cmd(string.format([[normal! F%svf%s]], d, d))
+  end, { silent = true })
+end
+
+
+
 vim.keymap.set("v", ";", function()
     local mode       = vim.fn.mode()            -- current mode, "v" or "V"
     local start_line = vim.fn.line("v")
@@ -37,7 +54,7 @@ vim.api.nvim_set_keymap('v', '<C-c>', '"+y', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<LeftRelease>', '"+y', { noremap = true, silent = true })
 
 -- Escape mapping
-vim.keymap.set('i', 'jj', '<Esc>')
+-- vim.keymap.set('i', 'jj', '<Esc>')
 
 -- Leader key mappings
 vim.keymap.set('n', '<leader>s', ':w<CR>:qa!<CR>', { desc = 'Save and Quit All' })
@@ -80,3 +97,16 @@ vim.keymap.set("n", ",d", _G.toggle_codeium, { noremap = true, silent = true })
 --     vim.cmd('wa')  -- Write all
 --     vim.cmd('qa!') -- Quit all
 -- end, {})
+
+-- diagnostics toggle state
+local diagnostics_active = true
+
+vim.keymap.set("n", "<leader>d", function()
+  diagnostics_active = not diagnostics_active
+  if diagnostics_active then
+    vim.diagnostic.enable()
+  else
+    vim.diagnostic.disable()
+  end
+end, { desc = "Toggle LSP diagnostics" })
+

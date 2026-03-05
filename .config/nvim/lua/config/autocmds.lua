@@ -45,3 +45,73 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt.foldexpr = 'v:lua.GetCustomFoldLevel(v:lnum)'
     end,
 })
+
+
+
+local function j2_comment_operator()
+    local open          = "{# /* "
+    local close         = " */ #}"
+    local esc_open      = vim.pesc(open)
+    local esc_close     = vim.pesc(close)
+
+    local start_line    = vim.fn.getpos("'[")[2]
+    local end_line      = vim.fn.getpos("']")[2]
+
+    -- First pass: all non-blank lines commented? → uncomment; otherwise → comment all
+    local all_commented = true
+    for l = start_line, end_line do
+        local line = vim.api.nvim_buf_get_lines(0, l - 1, l, false)[1]
+        if line:match("%S") then
+            local _, content = line:match("^(%s*)(.*)")
+            if not (content:match("^" .. esc_open)
+                    and content:match(esc_close .. "%s*$")) then
+                all_commented = false
+                break
+            end
+        end
+    end
+
+    for l = start_line, end_line do
+        local line = vim.api.nvim_buf_get_lines(0, l - 1, l, false)[1]
+        local indent, content = line:match("^(%s*)(.*)")
+
+        if all_commented then
+            content = content:gsub("^" .. esc_open, "")
+            content = content:gsub(esc_close .. "%s*$", "")
+            line = indent .. content
+        else
+            if content ~= ""
+                and not (content:match("^" .. esc_open)
+                    and content:match(esc_close .. "%s*$")) then
+                line = indent .. open .. content .. close
+            end
+        end
+
+        vim.api.nvim_buf_set_lines(0, l - 1, l, false, { line })
+    end
+end
+
+_G.j2_comment_operator = j2_comment_operator
+
+vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "*j2",
+    callback = function()
+        -- operator mapping (gc + motion)
+        vim.keymap.set("n", "gc", function()
+            vim.o.operatorfunc = "v:lua.j2_comment_operator"
+            return "g@"
+        end, { buffer = true, expr = true })
+
+        -- gcc = comment current line properly
+        vim.keymap.set("n", "gcc", function()
+            vim.o.operatorfunc = "v:lua.j2_comment_operator"
+            return "g@_"
+        end, { buffer = true, expr = true })
+
+        -- visual mode
+        vim.keymap.set("x", "gc", function()
+            vim.o.operatorfunc = "v:lua.j2_comment_operator"
+            return "g@"
+        end, { buffer = true, expr = true })
+    end,
+})

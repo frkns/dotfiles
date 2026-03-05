@@ -11,34 +11,15 @@ return {
         end,
     },
 
-    -- Color picker and previews
-    -- {
-    --     "uga-rosa/ccc.nvim",
-    --     config = function()
-    --         require("ccc").setup({
-    --             highlighter = {
-    --                 auto_enable = true, -- Enable previews automatically
-    --             },
-    --         })
-    --     end
-    -- },
-    --
-    -- Mini icons
-    {
-        'echasnovski/mini.nvim',
-        version = '*',
-        config = function()
-            require('mini.icons').setup()
-        end,
-    },
 
-    -- Better comments
-    {
-        "folke/ts-comments.nvim",
-        event = "VeryLazy",
-    },
 
-    -- Treesitter for better syntax highlighting
+
+    {
+        'numToStr/Comment.nvim',
+        opts = {
+            -- options here
+        }
+    },
     {
         'nvim-treesitter/nvim-treesitter',
         run = ':TSUpdate',
@@ -71,7 +52,7 @@ return {
                     },
                     java = {
                         "cd \"$dir\" &&",
-                        "javac \"$fileName\"",
+                        "java \"$fileName\"",
                     },
                     python = {
                         "cd $dir &&",
@@ -157,44 +138,72 @@ return {
             "MunifTanjim/nui.nvim",
         },
         lazy = false,
-        opts = {
-            close_if_last_window = true,
-            enable_git_status = false,
-            default_component_configs = {
-                symlink_target = {
-                    enabled = true,
+        config = function()
+            -- Map .lnj to Java icon
+            local devicons = require("nvim-web-devicons")
+            devicons.set_icon({
+                lnj = { icon = "", color = "#DC322F", name = "Java" },
+                ["java.j2"] = { icon = "", color = "#859900", name = "JavaJ2" },
+                ["jj2"] = { icon = "", color = "#859900", name = "JavaJ2" },
+            })
+
+            -- Neo-tree setup
+            require("neo-tree").setup({
+                sort_function = function(a, b)
+                    -- directories first
+                    if a.type ~= b.type then
+                        return a.type == "directory"
+                    end
+
+                    -- then by filetype (extension)
+                    local ext_a = a.ext or ""
+                    local ext_b = b.ext or ""
+                    if ext_a ~= ext_b then
+                        return ext_a < ext_b
+                    end
+
+                    -- finally by name
+                    return a.path < b.path
+                end,
+                enable_git_status = false,
+                default_component_configs = {
+                    symlink_target = {
+                        enabled = true,
+                    },
                 },
-            },
-            filesystem = {
-                filtered_items = {
-                    visible = true,
-                    hide_dotfiles = false,
-                    hide_gitignored = false,
-                    hide_hidden = false,
+                filesystem = {
+                    filtered_items = {
+                        visible = true,
+                        hide_dotfiles = false,
+                        hide_gitignored = false,
+                        hide_hidden = false,
+                    },
+                    follow_current_file = {
+                        enabled = true,
+                        leave_dirs_open = false,
+                    },
                 },
-                follow_current_file = {
-                    enabled = true,
-                    leave_dirs_open = false,
+                window = {
+                    mappings = {
+                        ["l"] = "open",
+                        ["h"] = "close_node",
+                        ["<CR>"] = "open",
+                        ["."] = function(state)
+                            local node = state.tree:get_node()
+                            local path = node.path
+                            if node.type ~= "directory" then
+                                path = vim.fn.fnamemodify(path, ":h")
+                            end
+                            vim.cmd("cd " .. vim.fn.fnameescape(path))
+                            vim.notify("Changed Neovim CWD to: " .. path)
+                        end,
+                    },
                 },
-            },
-            window = {
-                mappings = {
-                    ["l"] = "open",
-                    ["h"] = "close_node",
-                    ["<CR>"] = "open",
-                    ["."] = function(state)
-                        local node = state.tree:get_node()
-                        local path = node.path
-                        if node.type ~= "directory" then
-                            path = vim.fn.fnamemodify(path, ":h")
-                        end
-                        vim.cmd("cd " .. vim.fn.fnameescape(path))
-                        vim.notify("Changed Neovim CWD to: " .. path)
-                    end,
-                },
-            },
-        },
-    },
+            })
+        end,
+    }
+    ,
+
 
     -- Markdown preview
     {

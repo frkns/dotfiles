@@ -85,37 +85,46 @@ return {
             -- Python LSP setup
             lspconfig.pylsp.setup({
                 capabilities = capabilities,
-                cmd = { get_uv_venv_python(), "-m", "pylsp" },
-                on_attach = function(client, bufnr)
-                    local python = get_uv_venv_python()
-                    print("+ " .. python)
-                end,
+
+                -- Let Mason provide pylsp
+                cmd = { "pylsp" },
+
+                root_dir = lspconfig.util.root_pattern(
+                    "pyproject.toml",
+                    "setup.cfg",
+                    "setup.py",
+                    ".git"
+                ),
+
                 settings = {
                     pylsp = {
                         plugins = {
-                            pyflakes = { enabled = false }, -- for syntax errors
+                            -- Disable default linters
+                            pyflakes = { enabled = false },
                             pycodestyle = { enabled = false },
                             mccabe = { enabled = false },
                             pylint = { enabled = false },
+
+                            -- Enable formatting
+                            pylsp_black = { enabled = true },
+                            pylsp_isort = { enabled = false },
+                            yapf = { enabled = false },
+
+                            -- ✅ FIXED mypy config (FLAT)
                             pylsp_mypy = {
                                 enabled = true,
                                 live_mode = true,
                                 dmypy = false,
-                                -- Point mypy to the venv's Python interpreter
-                                pylsp_mypy = {
-                                    enabled = true,
-                                    live_mode = true,
-                                    dmypy = false,
-                                    overrides = get_mypy_overrides(), -- Call the function, don't pass it
-                                },
                             },
-                            pylsp_black = { enabled = true },
-                            pylsp_isort = { enabled = false },
-                            yapf = { enabled = false },
                         },
                     },
                 },
+
+                on_attach = function(client, bufnr)
+                    print("pylsp attached to", vim.api.nvim_buf_get_name(bufnr))
+                end,
             })
+
 
             -- hls
             lspconfig.hls.setup({

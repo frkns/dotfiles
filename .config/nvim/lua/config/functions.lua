@@ -30,11 +30,39 @@ function run_local()
     term_buf = vim.api.nvim_get_current_buf()
 end
 
-function run_make()
-    local make_cmd = "make"
+function find_makefile_dir()
+    local current_file = vim.fn.expand('%:p:h')  -- directory of current file
+    local dir = current_file
+
+    while dir ~= '/' and dir ~= '' do
+        for _, name in ipairs({ 'Makefile', 'makefile', 'GNUmakefile' }) do
+            if vim.fn.filereadable(dir .. '/' .. name) == 1 then
+                return dir
+            end
+        end
+        dir = vim.fn.fnamemodify(dir, ':h')  -- go up one directory
+    end
+
+    return nil
+end
+
+function run_make(target)
+    local makefile_dir = find_makefile_dir()
+
+    if not makefile_dir then
+        vim.notify("No Makefile found in directory tree", vim.log.levels.ERROR)
+        return
+    end
+
+    local make_cmd = "make -C " .. vim.fn.shellescape(makefile_dir)
+    if target then
+        make_cmd = make_cmd .. " " .. target
+    end
+
     if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
         vim.api.nvim_buf_delete(term_buf, { force = true })
     end
+
     vim.cmd("belowright 12split | terminal " .. make_cmd)
     term_buf = vim.api.nvim_get_current_buf()
     vim.cmd("startinsert")
@@ -43,6 +71,7 @@ end
 -- Bind funcs
 vim.api.nvim_set_keymap('n', ',t', ':w<CR>:lua run_local()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', ',m', ':w<CR>:lua run_make()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', ',p', ':w<CR>:lua run_make("prod")<CR>', { noremap = true, silent = true })
 
 
 
@@ -71,4 +100,9 @@ end
 -- Key mappings for functions
 vim.api.nvim_set_keymap('n', ',o', ':w<CR>:lua run_oj()<CR>', { noremap = true, silent = true })
 
--- LSP diagnostics handler removed to avoid conflicts with nvim-lspconfig migration
+vim.filetype.add({ extension = { jj2 = "java", }, })
+vim.filetype.add({ extension = { pj = "java", }, })
+vim.filetype.add({ extension = { lnj = "java", }, })
+vim.filetype.add({ extension = { j2 = "java", }, })
+vim.filetype.add({ extension = { jinja2 = "java", }, })
+

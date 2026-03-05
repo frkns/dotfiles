@@ -45,7 +45,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- set C and C++ comment string
 vim.cmd [[autocmd FileType c,cpp setlocal commentstring=//\ %s]]
-vim.cmd [[autocmd FileType java setlocal commentstring=//\ %s]]
+-- vim.cmd [[autocmd FileType java setlocal commentstring=//\ %s]]
 
 -- Diagnostic configuration
 vim.diagnostic.config({
