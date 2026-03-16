@@ -172,7 +172,7 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
-alias pip='python3.13 -m pip'
+alias pip='python3.12 -m pip'
 alias pip3.10='python3.10 -m pip'
 alias pip3.11='python3.11 -m pip'
 alias pip3.12='python3.12 -m pip'
@@ -202,7 +202,6 @@ export CPP_PREFIX="g++ -std=c++23 -DLOCAL -O2 -g -Wall -Wextra -Wshadow -Wformat
 
 function cd() {
   builtin cd "$@"
-
   if [[ -z "$VIRTUAL_ENV" ]] ; then
     ## If env folder is found then activate the vitualenv
       if [[ -d ./.venv ]] ; then
@@ -210,3 +209,8 @@ function cd() {
       fi
   fi
 }
+
+# opencode
+export PATH=/home/sunrise/.opencode/bin:$PATH
+export BROWSER="/mnt/c/Program Files/Mozilla Firefox/firefox.exe"
+export BROWSER=/usr/local/bin/wsl-browser

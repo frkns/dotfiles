@@ -100,6 +100,8 @@ end
 -- Key mappings for functions
 vim.api.nvim_set_keymap('n', ',o', ':w<CR>:lua run_oj()<CR>', { noremap = true, silent = true })
 
+vim.filetype.add({ extension = { pyj2 = "python", }, })
+vim.filetype.add({ extension = { ppy = "python", }, })
 vim.filetype.add({ extension = { jj2 = "java", }, })
 vim.filetype.add({ extension = { pj = "java", }, })
 vim.filetype.add({ extension = { lnj = "java", }, })

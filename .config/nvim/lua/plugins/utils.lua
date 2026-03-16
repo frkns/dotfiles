@@ -145,6 +145,8 @@ return {
                 lnj = { icon = "", color = "#DC322F", name = "Java" },
                 ["java.j2"] = { icon = "", color = "#859900", name = "JavaJ2" },
                 ["jj2"] = { icon = "", color = "#859900", name = "JavaJ2" },
+                ["pyj2"] = { icon = "", color = "#859900", name = "Python" },
+                ["ppy"] = { icon = "", color = "#859900", name = "Python" },
             })
 
             -- Neo-tree setup
