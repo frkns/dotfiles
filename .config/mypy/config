@@ -1,4 +1,5 @@
 [mypy]
+exclude = .*\.pyj2
 ; ignore_errors = True
 ; disable_error_code = var-annotated, call-overload, arg-type, index, operator, has-type, union-attr, attr-defined, assignment, misc, return-value, valid-type, list-item, no-redef, type-var
 ignore_missing_imports = True

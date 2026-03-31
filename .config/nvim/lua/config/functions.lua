@@ -48,12 +48,12 @@ end
 
 function run_make(target)
     local makefile_dir = find_makefile_dir()
-
     if not makefile_dir then
         vim.notify("No Makefile found in directory tree", vim.log.levels.ERROR)
         return
     end
 
+    local current_buf = vim.api.nvim_get_current_buf()
     local make_cmd = "make -C " .. vim.fn.shellescape(makefile_dir)
     if target then
         make_cmd = make_cmd .. " " .. target
@@ -66,6 +66,19 @@ function run_make(target)
     vim.cmd("belowright 12split | terminal " .. make_cmd)
     term_buf = vim.api.nvim_get_current_buf()
     vim.cmd("startinsert")
+
+    -- Auto-reload the original buffer when terminal closes
+    vim.api.nvim_create_autocmd("TermClose", {
+        buffer = term_buf,
+        once = true,
+        callback = function()
+            if vim.api.nvim_buf_is_valid(current_buf) then
+                vim.api.nvim_buf_call(current_buf, function()
+                    vim.cmd("edit")
+                end)
+            end
+        end,
+    })
 end
 
 -- Bind funcs

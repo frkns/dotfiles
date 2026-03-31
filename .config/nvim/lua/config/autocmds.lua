@@ -18,24 +18,22 @@ vim.api.nvim_create_autocmd("FileType", {
     end
 })
 
--- Function to detect and optimize for large files
-local function optimize_large_files()
-    local max_file_size = 1024 * 1024 -- in bytes
-    local file_size = vim.fn.getfsize(vim.fn.expand("%:p"))
-    if file_size > max_file_size then
-        vim.cmd("syntax off")
-        vim.cmd("filetype off")
-        vim.o.undofile = false
-        vim.o.swapfile = false
-        vim.g.loaded = true
-        print("Large file detected: Optimizations applied")
-    end
-end
-
--- Run the optimization on BufRead and FileReadPost events
-vim.api.nvim_create_autocmd({ "BufRead", "FileReadPost" }, {
-    callback = optimize_large_files,
-})
+-- -- Function to detect and optimize for large files
+-- local function optimize_large_files()
+--     local max_file_size = 1024 * 1024 -- in bytes
+--     local file_size = vim.fn.getfsize(vim.fn.expand("%:p"))
+--     if file_size > max_file_size then
+--         vim.cmd("syntax off")
+--         vim.cmd("filetype off")
+--         vim.o.undofile = false
+--         vim.o.swapfile = false
+--         vim.g.loaded = true
+--         print("Large file detected: Optimizations applied")
+--     end
+-- end
+-- vim.api.nvim_create_autocmd({ "BufRead", "FileReadPost" }, {
+--     callback = optimize_large_files,
+-- })
 
 -- treesitter likes to override our fold settings so we'll override theirs
 vim.api.nvim_create_autocmd("FileType", {
@@ -115,3 +113,13 @@ vim.api.nvim_create_autocmd("BufEnter", {
         end, { buffer = true, expr = true })
     end,
 })
+
+-- Disable diagnostics in *.pyj2 buffers
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile", "BufEnter" }, {
+  pattern = "*.pyj2",
+  callback = function(args)
+    vim.diagnostic.disable(args.buf)
+  end,
+})
+
+vim.opt.swapfile = false

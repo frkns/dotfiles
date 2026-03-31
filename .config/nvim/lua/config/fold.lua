@@ -1,7 +1,17 @@
 -- Custom folding configuration
 
+
+
 function _G.custom_fold_text()
-    local line = vim.fn.getline(vim.v.foldstart + 1)
+    local lnum = vim.v.foldstart + 1
+    local line = vim.fn.getline(lnum)
+
+    -- Skip past decorator lines to reach the def/class line
+    while line:match("^%s*@") and lnum <= vim.v.foldend do
+        lnum = lnum + 1
+        line = vim.fn.getline(lnum)
+    end
+
     local count = vim.v.foldend - vim.v.foldstart + 1
     local preview = line:gsub("^%s+", ""):sub(1, 40)
     return string.format("🐬 %s ... (%d lines)", preview, count)

@@ -113,7 +113,7 @@ return {
                             -- ✅ FIXED mypy config (FLAT)
                             pylsp_mypy = {
                                 enabled = true,
-                                live_mode = true,
+                                live_mode = false,
                                 dmypy = false,
                             },
                         },
